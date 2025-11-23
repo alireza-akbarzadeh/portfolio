@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
+import { SpotlightCommand } from '../components/windows/spotlight-command'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -31,13 +32,14 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <HeadContent />
         <link type="image/svg+xml" rel="icon" href="/macbook.png" />
       </head>
-      <body>
-        {children}
+      <body className="h-full overflow-hidden">
+        <div className="h-full overflow-auto">{children}</div>
+        <SpotlightCommand />
         <TanStackDevtools
           config={{
             position: 'bottom-right',

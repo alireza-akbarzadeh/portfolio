@@ -1,5 +1,6 @@
 import { navIcons, navLinks } from '@/constants'
 import { RealtimeClock } from './realtime-clock'
+import { toggleSpotlight } from '@/store'
 
 export function Navbar() {
   return (
@@ -23,6 +24,8 @@ export function Navbar() {
                 src={item.img}
                 className="icon-hover"
                 alt={`icon-${item.id}`}
+                onClick={item.id === 2 ? toggleSpotlight : undefined}
+                style={item.id === 2 ? { cursor: 'pointer' } : undefined}
               />
             </li>
           ))}
