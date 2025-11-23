@@ -2,6 +2,9 @@ import { useRef, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
+// Register GSAP plugin
+gsap.registerPlugin(useGSAP)
+
 interface UseWindowAnimationsProps {
   isOpen: boolean
   isMinimized: boolean
