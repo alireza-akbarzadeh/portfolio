@@ -120,6 +120,11 @@ Type 'help' to see available commands.`,
 
   // Enhanced key handler with autocomplete
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow Escape to bubble up when no autocomplete suggestions
+    if (e.key === 'Escape' && !autocomplete.showSuggestions) {
+      return // Let global handler close the window
+    }
+
     // Try autocomplete first
     const autocompleteResult = autocomplete.handleKeyDown(e)
     if (autocompleteResult === true) {
@@ -166,10 +171,10 @@ Type 'help' to see available commands.`,
       minHeight={400}
     >
       <div
-        className="h-full bg-[#1e1e1e] text-gray-100 font-mono text-sm overflow-y-auto p-4 flex flex-col"
+        className="h-full bg-[#1e1e1e] text-gray-100 font-mono text-sm overflow-y-auto p-4 flex flex-col terminal-scrollbar"
         onClick={() => terminal.inputRef.current?.focus()}
       >
-        <div className="flex-1 overflow-y-auto pb-4">
+        <div className="flex-1 overflow-y-auto pb-4 terminal-scrollbar">
           {terminal.history.map((item, index) => (
             <div key={index} className="mb-3">
               {item.command !== 'welcome' && (

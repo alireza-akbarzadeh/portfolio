@@ -28,6 +28,8 @@ export interface AppState {
   windows: Record<WindowType, WindowState>
   // Highest z-index tracker
   maxZIndex: number
+  // Currently focused window
+  focusedWindow: WindowType | null
 }
 
 const INITIAL_Z_INDEX = 1000
@@ -57,6 +59,7 @@ const initialState: AppState = {
     trash: createInitialWindowState(),
   },
   maxZIndex: INITIAL_Z_INDEX,
+  focusedWindow: null,
 }
 
 export const appStore = new Store(initialState)
@@ -106,7 +109,16 @@ export const closeWindow = (windowType: WindowType) => {
         data: null,
       },
     },
+    focusedWindow:
+      state.focusedWindow === windowType ? null : state.focusedWindow,
   }))
+}
+
+export const closeFocusedWindow = () => {
+  const focusedWindow = appStore.state.focusedWindow
+  if (focusedWindow && appStore.state.windows[focusedWindow].isOpen) {
+    closeWindow(focusedWindow)
+  }
 }
 
 export const toggleWindow = (windowType: WindowType, data?: any) => {
@@ -131,6 +143,7 @@ export const focusWindow = (windowType: WindowType) => {
         },
       },
       maxZIndex: newZIndex,
+      focusedWindow: windowType,
     }
   })
 }

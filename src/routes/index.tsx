@@ -3,6 +3,7 @@ import { SettingsWindow } from '@/components/windows/settings-window'
 import { GlobalKeyboardShortcuts } from '@/components/global-keyboard-shortcuts'
 import { Navbar } from '@/components/navbar'
 import { createFileRoute } from '@tanstack/react-router'
+import Dock from '@/components/dock'
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -13,6 +14,7 @@ function App() {
       <Navbar />
       <TerminalWindow />
       <SettingsWindow />
+      <Dock />
     </main>
   )
 }

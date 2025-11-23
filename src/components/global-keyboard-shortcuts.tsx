@@ -1,5 +1,11 @@
 import { useEffect } from 'react'
-import { toggleWindow, setSpotlightOpen, openWindow } from '@/store'
+import {
+  toggleWindow,
+  setSpotlightOpen,
+  openWindow,
+  closeFocusedWindow,
+  appStore,
+} from '@/store'
 
 /**
  * Global keyboard shortcuts handler
@@ -41,9 +47,13 @@ export function GlobalKeyboardShortcuts() {
         return
       }
 
-      // Escape - Close Spotlight if open
+      // Escape - Close Spotlight if open, otherwise close focused window
       if (e.code === 'Escape') {
-        setSpotlightOpen(false)
+        if (appStore.state.spotlightOpen) {
+          setSpotlightOpen(false)
+        } else {
+          closeFocusedWindow()
+        }
         return
       }
     }
