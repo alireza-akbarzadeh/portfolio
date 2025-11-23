@@ -50,6 +50,16 @@ export function SpotlightCommand() {
       category: 'Navigation',
     },
     {
+      id: 'finder',
+      label: 'Finder',
+      icon: <FolderIcon className="mr-2 h-4 w-4" />,
+      action: () => {
+        openWindow('finder')
+        setOpen(false)
+      },
+      category: 'Apps',
+    },
+    {
       id: 'projects',
       label: 'Projects / Portfolio',
       icon: <FolderIcon className="mr-2 h-4 w-4" />,

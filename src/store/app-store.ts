@@ -1,117 +1,61 @@
 import { Store } from '@tanstack/react-store'
-
-export type WindowType =
-  | 'finder'
-  | 'contact'
-  | 'resume'
-  | 'safari'
-  | 'photos'
-  | 'terminal'
-  | 'txtfile'
-  | 'imgfile'
-  | 'trash'
-
-export interface WindowState {
-  isOpen: boolean
-  zIndex: number
-  data: any
-  position: { x: number; y: number }
-  size: { width: number; height: number }
-  isMinimized: boolean
-  isMaximized: boolean
-}
-
-export interface AppState {
-  // Spotlight state
-  spotlightOpen: boolean
-  // Window states
-  windows: Record<WindowType, WindowState>
-  // Highest z-index tracker
-  maxZIndex: number
-  // Currently focused window
-  focusedWindow: WindowType | null
-}
-
-const INITIAL_Z_INDEX = 1000
-const SPOTLIGHT_Z_INDEX = 9999 // Spotlight always on top
-
-const createInitialWindowState = (): WindowState => ({
-  isOpen: false,
-  zIndex: INITIAL_Z_INDEX,
-  data: null,
-  position: { x: 100, y: 100 },
-  size: { width: 800, height: 600 },
-  isMinimized: false,
-  isMaximized: false,
-})
-
-const initialState: AppState = {
-  spotlightOpen: false,
-  windows: {
-    finder: createInitialWindowState(),
-    contact: createInitialWindowState(),
-    resume: createInitialWindowState(),
-    safari: createInitialWindowState(),
-    photos: createInitialWindowState(),
-    terminal: createInitialWindowState(),
-    txtfile: createInitialWindowState(),
-    imgfile: createInitialWindowState(),
-    trash: createInitialWindowState(),
-  },
-  maxZIndex: INITIAL_Z_INDEX,
-  focusedWindow: null,
-}
+import { produce } from 'immer'
+import type { WindowType, WindowState } from './types'
+import {
+  initialState,
+  SPOTLIGHT_Z_INDEX,
+  INITIAL_Z_INDEX,
+  MAXIMIZED_WINDOW_Z_INDEX,
+  createInitialWindowState,
+} from './constants'
 
 export const appStore = new Store(initialState)
 
+// Re-export types for convenience
+export type { WindowType, WindowState, AppState } from './types'
+export { SPOTLIGHT_Z_INDEX } from './constants'
+
 // Spotlight Actions
 export const toggleSpotlight = () => {
-  appStore.setState((state) => ({
-    ...state,
-    spotlightOpen: !state.spotlightOpen,
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.spotlightOpen = !draft.spotlightOpen
+    }),
+  )
 }
 
 export const setSpotlightOpen = (open: boolean) => {
-  appStore.setState((state) => ({
-    ...state,
-    spotlightOpen: open,
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.spotlightOpen = open
+    }),
+  )
 }
 
 // Window Actions
 export const openWindow = (windowType: WindowType, data?: any) => {
-  appStore.setState((state) => {
-    const newZIndex = state.maxZIndex + 1
-    return {
-      ...state,
-      windows: {
-        ...state.windows,
-        [windowType]: {
-          isOpen: true,
-          zIndex: newZIndex,
-          data: data || null,
-        },
-      },
-      maxZIndex: newZIndex,
-    }
-  })
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      const newZIndex = draft.maxZIndex + 1
+      draft.windows[windowType].isOpen = true
+      draft.windows[windowType].zIndex = newZIndex
+      draft.windows[windowType].data = data || null
+      draft.maxZIndex = newZIndex
+      draft.focusedWindow = windowType
+    }),
+  )
 }
 
 export const closeWindow = (windowType: WindowType) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        isOpen: false,
-        data: null,
-      },
-    },
-    focusedWindow:
-      state.focusedWindow === windowType ? null : state.focusedWindow,
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].isOpen = false
+      draft.windows[windowType].data = null
+      if (draft.focusedWindow === windowType) {
+        draft.focusedWindow = null
+      }
+    }),
+  )
 }
 
 export const closeFocusedWindow = () => {
@@ -131,75 +75,53 @@ export const toggleWindow = (windowType: WindowType, data?: any) => {
 }
 
 export const focusWindow = (windowType: WindowType) => {
-  appStore.setState((state) => {
-    const newZIndex = state.maxZIndex + 1
-    return {
-      ...state,
-      windows: {
-        ...state.windows,
-        [windowType]: {
-          ...state.windows[windowType],
-          zIndex: newZIndex,
-        },
-      },
-      maxZIndex: newZIndex,
-      focusedWindow: windowType,
-    }
-  })
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      const newZIndex = draft.maxZIndex + 1
+      draft.windows[windowType].zIndex = newZIndex
+      draft.maxZIndex = newZIndex
+      draft.focusedWindow = windowType
+    }),
+  )
 }
 
 export const setWindowData = (windowType: WindowType, data: any) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        data,
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].data = data
+    }),
+  )
 }
 
 export const minimizeWindow = (windowType: WindowType) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        isMinimized: true,
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].isMinimized = true
+    }),
+  )
 }
 
 export const restoreWindow = (windowType: WindowType) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        isMinimized: false,
-        isMaximized: false,
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].isMinimized = false
+      draft.windows[windowType].isMaximized = false
+      // Reset to normal z-index when restoring
+      const newZIndex = draft.maxZIndex + 1
+      draft.windows[windowType].zIndex = newZIndex
+      draft.maxZIndex = newZIndex
+    }),
+  )
 }
 
 export const maximizeWindow = (windowType: WindowType) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        isMaximized: true,
-        isMinimized: false,
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].isMaximized = true
+      draft.windows[windowType].isMinimized = false
+      draft.windows[windowType].zIndex = MAXIMIZED_WINDOW_Z_INDEX
+    }),
+  )
 }
 
 export const setWindowPosition = (
@@ -207,16 +129,11 @@ export const setWindowPosition = (
   x: number,
   y: number,
 ) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        position: { x, y },
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].position = { x, y }
+    }),
+  )
 }
 
 export const setWindowSize = (
@@ -224,16 +141,11 @@ export const setWindowSize = (
   width: number,
   height: number,
 ) => {
-  appStore.setState((state) => ({
-    ...state,
-    windows: {
-      ...state.windows,
-      [windowType]: {
-        ...state.windows[windowType],
-        size: { width, height },
-      },
-    },
-  }))
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      draft.windows[windowType].size = { width, height }
+    }),
+  )
 }
 
 export const isWindowOpen = (windowType: WindowType): boolean => {
@@ -251,15 +163,13 @@ export const getSpotlightZIndex = (): number => {
 
 // Close all windows
 export const closeAllWindows = () => {
-  appStore.setState((state) => {
-    const updatedWindows = { ...state.windows }
-    Object.keys(updatedWindows).forEach((key) => {
-      updatedWindows[key as WindowType] = createInitialWindowState()
-    })
-    return {
-      ...state,
-      windows: updatedWindows,
-      maxZIndex: INITIAL_Z_INDEX,
-    }
-  })
+  appStore.setState((state) =>
+    produce(state, (draft) => {
+      Object.keys(draft.windows).forEach((key) => {
+        const windowKey = key as WindowType
+        draft.windows[windowKey] = createInitialWindowState()
+      })
+      draft.maxZIndex = INITIAL_Z_INDEX
+    }),
+  )
 }

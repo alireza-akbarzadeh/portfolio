@@ -9,6 +9,7 @@ import { GlobalKeyboardShortcuts } from '@/components/global-keyboard-shortcuts'
 import { Navbar } from '@/components/navbar'
 import { createFileRoute } from '@tanstack/react-router'
 import Dock from '@/components/dock'
+import { Resume } from '@/components/windows/resume'
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -24,6 +25,7 @@ function App() {
       <TerminalWindow />
       <TrashWindow />
       <SettingsWindow />
+      <Resume />
       <Dock />
     </main>
   )

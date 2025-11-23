@@ -10,11 +10,13 @@ import {
 import { useEffect } from 'react'
 import { useWindowDragResize } from './hooks/use-window-drag-resize'
 import { useWindowAnimations } from './hooks/use-window-animations'
+import { WindowControls } from './window-controls'
 
 interface WindowWrapperProps {
   windowType: WindowType
   title: string
   children: React.ReactNode
+  headerContent?: React.ReactNode
   className?: string
   defaultWidth?: number
   defaultHeight?: number
@@ -26,6 +28,7 @@ export function WindowWrapper({
   windowType,
   title,
   children,
+  headerContent,
   className = '',
   defaultWidth = 800,
   defaultHeight = 600,
@@ -39,20 +42,25 @@ export function WindowWrapper({
   const size = window.size || { width: defaultWidth, height: defaultHeight }
 
   // Use custom hooks for drag/resize and animations
-  const { isDragging, isResizing, handleMouseDown, handleResizeMouseDown } =
-    useWindowDragResize({
-      windowType,
-      isMaximized,
-      position,
-      size,
-      defaultWidth,
-      defaultHeight,
-      minWidth,
-      minHeight,
-      onFocus: window.focus,
-    })
+  const {
+    isDragging,
+    isResizing,
+    handleResizeMouseDown,
+    windowRef,
+    headerRef,
+  } = useWindowDragResize({
+    windowType,
+    isMaximized,
+    position,
+    size,
+    defaultWidth,
+    defaultHeight,
+    minWidth,
+    minHeight,
+    onFocus: window.focus,
+  })
 
-  const { windowRef, contentRef } = useWindowAnimations({
+  const { contentRef } = useWindowAnimations({
     isOpen: window.isOpen,
     isMinimized: window.isMinimized,
     isMaximized,
@@ -156,83 +164,24 @@ export function WindowWrapper({
 
       {/* Title Bar */}
       <div
-        className="shrink-0 flex items-center justify-between px-4 py-3 bg-linear-to-b from-gray-100 to-gray-50 border-b border-gray-200 select-none relative z-10"
-        onMouseDown={handleMouseDown}
+        ref={headerRef}
+        className="shrink-0 flex items-center gap-3 px-4 py-3 bg-linear-to-b from-gray-100 to-gray-50 border-b border-gray-200 select-none relative z-10"
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
-        <div className="flex items-center gap-2 relative z-20">
-          <button
-            className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff3b30] transition-colors group relative"
-            onClick={handleClose}
-            aria-label="Close"
-          >
-            <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <svg
-                width="6"
-                height="6"
-                viewBox="0 0 6 6"
-                fill="none"
-                className="text-[#4d0000]"
-              >
-                <path
-                  d="M0.5 0.5L5.5 5.5M5.5 0.5L0.5 5.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-          </button>
-          <button
-            className="w-3 h-3 rounded-full bg-[#febc2e] hover:bg-[#ffb300] transition-colors group relative"
-            onClick={handleMinimize}
-            aria-label="Minimize"
-          >
-            <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <svg
-                width="6"
-                height="1.5"
-                viewBox="0 0 6 1.5"
-                fill="none"
-                className="text-[#995700]"
-              >
-                <path
-                  d="M0.5 0.75H5.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-          </button>
-          <button
-            className="w-3 h-3 rounded-full bg-[#28c840] hover:bg-[#1fb734] transition-colors group relative"
-            onClick={handleMaximize}
-            aria-label="Maximize"
-          >
-            <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <svg
-                width="6"
-                height="6"
-                viewBox="0 0 6 6"
-                fill="none"
-                className="text-[#004d0a]"
-              >
-                <path
-                  d="M1.5 3L3 4.5L4.5 1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </button>
-        </div>
-        <h2 className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-gray-700 pointer-events-none">
-          {title}
-        </h2>
-        <div className="w-16" /> {/* Spacer for centering */}
+        <WindowControls
+          onClose={handleClose}
+          onMinimize={handleMinimize}
+          onMaximize={handleMaximize}
+        />
+        {headerContent ? (
+          <div className="flex-1 flex items-center pointer-events-auto">
+            {headerContent}
+          </div>
+        ) : (
+          <h2 className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-gray-700 pointer-events-none">
+            {title}
+          </h2>
+        )}
       </div>
       <div ref={contentRef} className="flex-1 bg-white overflow-hidden">
         {children}

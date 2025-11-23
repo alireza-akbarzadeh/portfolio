@@ -1,5 +1,11 @@
 import { useRef, useState, useEffect } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { Draggable } from 'gsap/Draggable'
 import { type WindowType, setWindowPosition, setWindowSize } from '@/store'
+
+// Register GSAP plugins
+gsap.registerPlugin(useGSAP, Draggable)
 
 interface UseWindowDragResizeProps {
   windowType: WindowType
@@ -28,30 +34,64 @@ export function useWindowDragResize({
   const [isResizing, setIsResizing] = useState(false)
   const [resizeDirection, setResizeDirection] = useState('')
 
-  const dragStartRef = useRef({ x: 0, y: 0, windowX: 0, windowY: 0 })
+  const windowRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const draggableInstanceRef = useRef<Draggable[] | null>(null)
+
   const resizeStartRef = useRef({
-    x: 0,
-    y: 0,
+    mouseX: 0,
+    mouseY: 0,
     width: 0,
     height: 0,
-    startX: 0,
-    startY: 0,
+    x: 0,
+    y: 0,
   })
 
-  // Drag handler
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (isMaximized) return
-    if ((e.target as HTMLElement).closest('button')) return
+  // Initialize GSAP Draggable
+  useGSAP(() => {
+    if (!windowRef.current || !headerRef.current || isMaximized) return
 
-    setIsDragging(true)
-    onFocus()
-    dragStartRef.current = {
-      x: e.clientX,
-      y: e.clientY,
-      windowX: position?.x || 100,
-      windowY: position?.y || 100,
+    if (draggableInstanceRef.current) {
+      draggableInstanceRef.current[0].kill()
     }
-  }
+
+    const currentWidth = size?.width || defaultWidth
+    const currentHeight = size?.height || defaultHeight
+
+    draggableInstanceRef.current = Draggable.create(windowRef.current, {
+      trigger: headerRef.current,
+      type: 'x,y',
+      bounds: {
+        minX: 0,
+        minY: 0,
+        maxX: window.innerWidth - currentWidth,
+        maxY: window.innerHeight - currentHeight,
+      },
+      inertia: true,
+      dragClickables: false,
+      allowContextMenu: true,
+      onPress: () => onFocus(),
+      onDragStart: () => setIsDragging(true),
+      onDrag: function () {
+        setWindowPosition(windowType, this.x, this.y)
+      },
+      onDragEnd: () => setIsDragging(false),
+    })
+
+    return () => {
+      if (draggableInstanceRef.current) {
+        draggableInstanceRef.current[0].kill()
+      }
+    }
+  }, [isMaximized, windowType, size, defaultWidth, defaultHeight])
+
+  // Sync GSAP position with store
+  useEffect(() => {
+    if (windowRef.current && draggableInstanceRef.current && position) {
+      gsap.set(windowRef.current, { x: position.x, y: position.y })
+      draggableInstanceRef.current[0].update()
+    }
+  }, [position])
 
   // Resize handler
   const handleResizeMouseDown = (e: React.MouseEvent, direction: string) => {
@@ -61,101 +101,91 @@ export function useWindowDragResize({
     setIsResizing(true)
     setResizeDirection(direction)
     onFocus()
+
     resizeStartRef.current = {
-      x: e.clientX,
-      y: e.clientY,
+      mouseX: e.clientX,
+      mouseY: e.clientY,
       width: size?.width || defaultWidth,
       height: size?.height || defaultHeight,
-      startX: position?.x || 100,
-      startY: position?.y || 100,
+      x: position?.x || 100,
+      y: position?.y || 100,
     }
   }
 
+  // Simplified resize with proper bounds
   useEffect(() => {
+    if (!isResizing) return
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        const deltaX = e.clientX - dragStartRef.current.x
-        const deltaY = e.clientY - dragStartRef.current.y
-        const newX = Math.max(0, dragStartRef.current.windowX + deltaX)
-        const newY = Math.max(0, dragStartRef.current.windowY + deltaY)
+      const { mouseX, mouseY, width, height, x, y } = resizeStartRef.current
+      const deltaX = e.clientX - mouseX
+      const deltaY = e.clientY - mouseY
+      const dir = resizeDirection
 
-        // Use GSAP for smooth dragging animation
-        setWindowPosition(windowType, newX, newY)
-      } else if (isResizing) {
-        const deltaX = e.clientX - resizeStartRef.current.x
-        const deltaY = e.clientY - resizeStartRef.current.y
+      let newWidth = width
+      let newHeight = height
+      let newX = x
+      let newY = y
 
-        let newWidth = resizeStartRef.current.width
-        let newHeight = resizeStartRef.current.height
-        let newX = resizeStartRef.current.startX
-        let newY = resizeStartRef.current.startY
+      // East (right)
+      if (dir.includes('e')) {
+        newWidth = Math.max(
+          minWidth,
+          Math.min(width + deltaX, window.innerWidth - x),
+        )
+      }
 
-        if (resizeDirection.includes('e')) {
-          newWidth = Math.max(minWidth, resizeStartRef.current.width + deltaX)
-        }
-        if (resizeDirection.includes('w')) {
-          newWidth = Math.max(minWidth, resizeStartRef.current.width - deltaX)
-          if (newWidth > minWidth) {
-            newX = resizeStartRef.current.startX + deltaX
-          }
-        }
-        if (resizeDirection.includes('s')) {
-          newHeight = Math.max(
-            minHeight,
-            resizeStartRef.current.height + deltaY,
-          )
-        }
-        if (resizeDirection.includes('n')) {
-          newHeight = Math.max(
-            minHeight,
-            resizeStartRef.current.height - deltaY,
-          )
-          if (newHeight > minHeight) {
-            newY = resizeStartRef.current.startY + deltaY
-          }
-        }
+      // West (left)
+      if (dir.includes('w')) {
+        const maxDelta = width - minWidth
+        const clampedDelta = Math.max(-x, Math.min(deltaX, maxDelta))
+        newWidth = width - clampedDelta
+        newX = x + clampedDelta
+      }
 
+      // South (bottom)
+      if (dir.includes('s')) {
+        newHeight = Math.max(
+          minHeight,
+          Math.min(height + deltaY, window.innerHeight - y),
+        )
+      }
+
+      // North (top)
+      if (dir.includes('n')) {
+        const maxDelta = height - minHeight
+        const clampedDelta = Math.max(-y, Math.min(deltaY, maxDelta))
+        newHeight = height - clampedDelta
+        newY = y + clampedDelta
+      }
+
+      if (newWidth !== width || newHeight !== height) {
         setWindowSize(windowType, newWidth, newHeight)
-        if (
-          newX !== resizeStartRef.current.startX ||
-          newY !== resizeStartRef.current.startY
-        ) {
-          setWindowPosition(windowType, newX, newY)
-        }
+      }
+      if (newX !== x || newY !== y) {
+        setWindowPosition(windowType, newX, newY)
       }
     }
 
     const handleMouseUp = () => {
-      setIsDragging(false)
       setIsResizing(false)
       setResizeDirection('')
     }
 
-    if (isDragging || isResizing) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [
-    isDragging,
-    isResizing,
-    resizeDirection,
-    windowType,
-    minWidth,
-    minHeight,
-    position,
-    size,
-    defaultWidth,
-    defaultHeight,
-  ])
+  }, [isResizing, resizeDirection, windowType, minWidth, minHeight])
 
   return {
     isDragging,
     isResizing,
-    handleMouseDown,
     handleResizeMouseDown,
+    windowRef,
+    headerRef,
   }
 }

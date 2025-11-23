@@ -97,6 +97,48 @@ const blogPosts = [
     image: '/images/blog3.png',
     link: 'https://jsmastery.com/blog/the-ultimate-guide-to-mastering-gsap-animations',
   },
+  {
+    id: 4,
+    date: 'Aug 5, 2025',
+    title: 'Building Scalable React Applications with Modern Architecture',
+    image: '/images/blog1.png',
+    link: 'https://jsmastery.com/blog/building-scalable-react-applications',
+  },
+  {
+    id: 5,
+    date: 'Jul 22, 2025',
+    title: "Next.js 15: What's New and How to Upgrade Your Projects",
+    image: '/images/blog2.png',
+    link: 'https://jsmastery.com/blog/nextjs-15-whats-new',
+  },
+  {
+    id: 6,
+    date: 'Jul 10, 2025',
+    title: 'Mastering CSS Grid and Flexbox for Modern Layouts',
+    image: '/images/blog3.png',
+    link: 'https://jsmastery.com/blog/mastering-css-grid-flexbox',
+  },
+  {
+    id: 7,
+    date: 'Jun 28, 2025',
+    title: 'Web Performance Optimization: Techniques That Actually Work',
+    image: '/images/blog1.png',
+    link: 'https://jsmastery.com/blog/web-performance-optimization',
+  },
+  {
+    id: 8,
+    date: 'Jun 15, 2025',
+    title: 'Understanding React Server Components and Streaming',
+    image: '/images/blog2.png',
+    link: 'https://jsmastery.com/blog/react-server-components-streaming',
+  },
+  {
+    id: 9,
+    date: 'Jun 1, 2025',
+    title: 'Advanced TypeScript Patterns for Enterprise Applications',
+    image: '/images/blog3.png',
+    link: 'https://jsmastery.com/blog/advanced-typescript-patterns',
+  },
 ]
 
 const techStack = [
@@ -489,18 +531,3 @@ export const locations = {
   resume: RESUME_LOCATION,
   trash: TRASH_LOCATION,
 }
-
-const INITIAL_Z_INDEX = 1000
-
-const WINDOW_CONFIG = {
-  finder: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  contact: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  resume: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  safari: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  photos: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  terminal: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  txtfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  imgfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-}
-
-export { INITIAL_Z_INDEX, WINDOW_CONFIG }
