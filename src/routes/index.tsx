@@ -5,6 +5,7 @@ import { SafariWindow } from '@/components/windows/safari-window'
 import { PhotosWindow } from '@/components/windows/photos-window'
 import { ContactWindow } from '@/components/windows/contact-window'
 import { TrashWindow } from '@/components/windows/trash-window'
+import { QuickLookWindow } from '@/components/windows/quicklook-window'
 import { GlobalKeyboardShortcuts } from '@/components/global-keyboard-shortcuts'
 import { Navbar } from '@/components/navbar'
 import { createFileRoute } from '@tanstack/react-router'
@@ -25,6 +26,7 @@ function App() {
       <TerminalWindow />
       <TrashWindow />
       <SettingsWindow />
+      <QuickLookWindow />
       <Resume />
       <Dock />
     </main>

@@ -38,15 +38,27 @@ export function useFinder() {
       return
     }
 
-    // Handle text files - open contact window or show content
+    // Handle text files - open quick look window
     if (item.fileType === 'txt') {
-      openWindow('contact')
+      openWindow('txtfile', { item })
       return
     }
 
     // Handle images - open photos window
     if (item.fileType === 'img') {
       openWindow('photos', { imageUrl: item.imageUrl, name: item.name })
+      return
+    }
+
+    // Handle audio files
+    if (item.fileType === 'audio' || item.fileType === 'mp3') {
+      openWindow('txtfile', { item })
+      return
+    }
+
+    // Handle video files
+    if (item.fileType === 'video' || item.fileType === 'mp4') {
+      openWindow('txtfile', { item })
       return
     }
 

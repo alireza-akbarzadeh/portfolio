@@ -5,6 +5,8 @@ import { FinderToolbar } from './finder/finder-toolbar'
 import { FinderGridView } from './finder/finder-grid-view'
 import { FinderListView } from './finder/finder-list-view'
 import { FinderPreview } from './finder/finder-preview'
+import { useEffect } from 'react'
+import { openWindow } from '@/store/app-store'
 
 export function FinderWindow() {
   const {
@@ -23,6 +25,34 @@ export function FinderWindow() {
     isBackDisabled,
     isForwardDisabled,
   } = useFinder()
+
+  // Quick Look with Spacebar
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (
+        e.code === 'Space' &&
+        selectedItem &&
+        selectedItem.kind !== 'folder'
+      ) {
+        e.preventDefault()
+
+        // Open appropriate viewer based on file type
+        if (selectedItem.fileType === 'img') {
+          openWindow('photos', {
+            imageUrl: selectedItem.imageUrl,
+            name: selectedItem.name,
+          })
+        } else if (selectedItem.fileType === 'pdf') {
+          openWindow('resume')
+        } else {
+          openWindow('txtfile', { item: selectedItem })
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [selectedItem])
 
   return (
     <WindowWrapper
