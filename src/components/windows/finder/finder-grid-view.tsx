@@ -20,8 +20,8 @@ export function FinderGridView({
           onDoubleClick={() => onItemDoubleClick(item)}
           className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-colors group ${
             selectedItemId === item.id
-              ? 'bg-blue-100 ring-2 ring-blue-500'
-              : 'hover:bg-gray-100'
+              ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500'
+              : 'hover:bg-gray-100 dark:hover:bg-gray-800'
           }`}
         >
           <img
@@ -29,7 +29,7 @@ export function FinderGridView({
             alt={item.name}
             className="w-16 h-16 object-contain"
           />
-          <span className="text-sm text-center text-gray-700 line-clamp-2 wrap-break-word">
+          <span className="text-sm text-center text-gray-700 dark:text-gray-300 line-clamp-2 wrap-break-word">
             {item.name}
           </span>
         </button>

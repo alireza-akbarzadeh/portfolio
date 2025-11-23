@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
 import { SpotlightCommand } from '../components/windows/spotlight-command'
+import { ThemeProvider } from '../components/theme-provider'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -38,19 +39,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <link type="image/svg+xml" rel="icon" href="/macbook.png" />
       </head>
       <body className="h-full overflow-hidden">
-        <div className="h-full overflow-auto">{children}</div>
-        <SpotlightCommand />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+          <div className="h-full overflow-auto">{children}</div>
+          <SpotlightCommand />
+          <TanStackDevtools
+            config={{
+              position: 'bottom-right',
+            }}
+            plugins={[
+              {
+                name: 'Tanstack Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

@@ -27,6 +27,7 @@ export const initialState: AppState = {
     txtfile: createInitialWindowState(),
     imgfile: createInitialWindowState(),
     trash: createInitialWindowState(),
+    settings: createInitialWindowState(),
   },
   maxZIndex: INITIAL_Z_INDEX,
   focusedWindow: null,

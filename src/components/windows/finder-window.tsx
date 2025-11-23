@@ -74,7 +74,7 @@ export function FinderWindow() {
         />
       }
     >
-      <div className="flex h-full bg-white">
+      <div className="flex h-full bg-white dark:bg-gray-800">
         <FinderSidebar
           currentLocation={currentLocation}
           openFolder={openFolder}

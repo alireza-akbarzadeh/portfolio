@@ -61,7 +61,7 @@ export function SafariWindow() {
         </>
       }
     >
-      <div className="h-full overflow-y-auto bg-linear-to-br from-gray-50 to-white">
+      <div className="h-full overflow-y-auto bg-linear-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         {/* Hero Section */}
         <div className="relative bg-linear-to-r from-blue-600 to-purple-600 text-white px-8 py-16">
           <div className="max-w-4xl mx-auto">
@@ -79,11 +79,13 @@ export function SafariWindow() {
         {/* Search Results Info */}
         {searchQuery && (
           <div className="max-w-5xl mx-auto px-8 py-4">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Found{' '}
               <span className="font-semibold">{filteredPosts.length}</span>{' '}
               {filteredPosts.length === 1 ? 'article' : 'articles'} matching "
-              <span className="font-semibold text-blue-600">{searchQuery}</span>
+              <span className="font-semibold text-blue-600 dark:text-blue-400">
+                {searchQuery}
+              </span>
               "
             </p>
           </div>
@@ -92,7 +94,7 @@ export function SafariWindow() {
         {/* Featured Post */}
         {featuredPost && (
           <div className="max-w-5xl mx-auto px-8 -mt-12 mb-12">
-            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 group">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 group">
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto overflow-hidden">
                   <img
@@ -109,10 +111,10 @@ export function SafariWindow() {
                     <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
                     {featuredPost.date}
                   </div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-blue-600 transition-colors">
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {featuredPost.title}
                   </h2>
-                  <p className="text-gray-600 mb-6 line-clamp-3">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">
                     Dive deep into the world of TypeScript and discover why it's
                     become the go-to choice for modern developers building
                     scalable applications.
@@ -135,12 +137,12 @@ export function SafariWindow() {
         {/* No Results Message */}
         {searchQuery && filteredPosts.length === 0 && (
           <div className="max-w-5xl mx-auto px-8 py-16 text-center">
-            <div className="bg-white rounded-2xl shadow-lg p-12">
-              <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12">
+              <Search className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 No articles found
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 We couldn't find any articles matching "
                 <span className="font-semibold text-blue-600">
                   {searchQuery}
@@ -161,10 +163,10 @@ export function SafariWindow() {
         {remainingPosts.length > 0 && (
           <div className="max-w-5xl mx-auto px-8 pb-16">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {searchQuery ? 'More Results' : 'Latest Articles'}
               </h2>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <div className="w-8 h-0.5 bg-linear-to-r from-blue-600 to-purple-600" />
                 <span>{filteredPosts.length} Posts</span>
               </div>
@@ -174,7 +176,7 @@ export function SafariWindow() {
               {remainingPosts.map((post, index) => (
                 <article
                   key={post.id}
-                  className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
                   style={{
                     animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
                   }}
@@ -204,14 +206,14 @@ export function SafariWindow() {
                       </svg>
                       {post.date}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                       {post.title}
                     </h3>
                     <a
                       href={post.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:gap-3 transition-all group/link mt-2"
+                      className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium text-sm hover:gap-3 transition-all group/link mt-2"
                     >
                       Continue Reading
                       <MoveRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />

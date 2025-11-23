@@ -20,8 +20,8 @@ export function FinderListView({
           onDoubleClick={() => onItemDoubleClick(item)}
           className={`w-full flex items-center gap-3 px-3 py-2 rounded transition-colors ${
             selectedItemId === item.id
-              ? 'bg-blue-100 ring-2 ring-blue-500'
-              : 'hover:bg-gray-100'
+              ? 'bg-blue-100 dark:bg-blue-900/30 ring-2 ring-blue-500'
+              : 'hover:bg-gray-100 dark:hover:bg-gray-800'
           }`}
         >
           <img
@@ -29,10 +29,12 @@ export function FinderListView({
             alt={item.name}
             className="w-8 h-8 object-contain"
           />
-          <span className="text-sm text-gray-700 flex-1 text-left">
+          <span className="text-sm text-gray-700 dark:text-gray-300 flex-1 text-left">
             {item.name}
           </span>
-          <span className="text-xs text-gray-500">{item.kind}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {item.kind}
+          </span>
         </button>
       ))}
     </div>

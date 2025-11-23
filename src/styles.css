@@ -165,7 +165,7 @@ code {
   }
 
   nav {
-    @apply flex justify-between items-center bg-white/50 backdrop-blur-3xl p-2 px-5 select-none;
+    @apply flex justify-between items-center bg-white/50 dark:bg-gray-900/80 backdrop-blur-3xl p-2 px-5 select-none;
 
     div {
       @apply flex items-center max-sm:w-full max-sm:justify-center gap-5;
@@ -184,7 +184,7 @@ code {
     }
 
     time {
-      @apply text-sm font-medium text-black;
+      @apply text-sm font-medium text-black dark:text-gray-200;
     }
   }
 }
@@ -252,10 +252,10 @@ code {
   }
 
   #dock {
-    @apply absolute bottom-5 left-1/2 -translate-x-1/2 z-[9999] select-none max-sm:hidden;
+    @apply absolute bottom-5 left-1/2 -translate-x-1/2  select-none max-sm:hidden;
 
     .dock-container {
-      @apply bg-white/20 backdrop-blur-md justify-between rounded-2xl p-1.5 flex items-end gap-1.5;
+      @apply bg-white/20 dark:bg-gray-800/40 backdrop-blur-md justify-between rounded-2xl p-1.5 flex items-end gap-1.5;
     }
 
     .tooltip {

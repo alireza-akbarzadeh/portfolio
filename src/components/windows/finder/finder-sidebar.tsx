@@ -12,9 +12,9 @@ export function FinderSidebar({
   onLocationClick,
 }: FinderSidebarProps) {
   return (
-    <div className="w-48 bg-gray-50 border-r border-gray-200 p-3">
+    <div className="w-48 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-3">
       <div className="mb-4">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-2">
+        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-2">
           Favorites
         </h3>
         <div className="space-y-1">
@@ -27,7 +27,7 @@ export function FinderSidebar({
                 className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${
                   currentLocation === key && !openFolder
                     ? 'bg-blue-500 text-white'
-                    : 'text-gray-700 hover:bg-gray-200'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 <img
@@ -42,7 +42,7 @@ export function FinderSidebar({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-2">
+        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-2">
           Work
         </h3>
         <div className="space-y-1">
@@ -52,7 +52,7 @@ export function FinderSidebar({
               className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${
                 currentLocation === 'work' && !openFolder
                   ? 'bg-blue-500 text-white'
-                  : 'text-gray-700 hover:bg-gray-200'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
               <img

@@ -8,6 +8,7 @@ export type WindowType =
   | 'txtfile'
   | 'imgfile'
   | 'trash'
+  | 'settings'
 
 export interface WindowState {
   isOpen: boolean

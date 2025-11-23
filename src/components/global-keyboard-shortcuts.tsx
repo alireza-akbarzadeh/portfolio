@@ -34,7 +34,7 @@ export function GlobalKeyboardShortcuts() {
       if (e.code === 'Comma' && e.ctrlKey && !e.shiftKey && !e.altKey) {
         e.preventDefault()
         e.stopPropagation()
-        openWindow('finder', { type: 'settings' })
+        openWindow('settings')
         return
       }
 

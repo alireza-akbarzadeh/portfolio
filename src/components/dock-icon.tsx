@@ -43,7 +43,7 @@ export function DockIcon({ app }: DockIconProps) {
 
           {/* Active indicator dot */}
           {window.isOpen && (
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white dark:bg-gray-300 rounded-full shadow-sm" />
           )}
         </button>
       </TooltipTrigger>
